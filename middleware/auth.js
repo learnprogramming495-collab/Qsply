@@ -1,8 +1,5 @@
 const jwt = require('jsonwebtoken');
 
-// NOTE: In production, the JWT secret should be a long, complex, and securely stored environment variable.
-const JWT_SECRET = 'your_jwt_secret';
-
 module.exports = function(req, res, next) {
     // Get token from header
     const token = req.header('x-auth-token');
@@ -14,7 +11,7 @@ module.exports = function(req, res, next) {
 
     // Verify token
     try {
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded.user;
         next();
     } catch (err) {

@@ -44,8 +44,7 @@ router.post('/register', async (req, res) => {
             }
         };
 
-        // NOTE: In production, the JWT secret should be a long, complex, and securely stored environment variable.
-        jwt.sign(payload, 'your_jwt_secret', { expiresIn: '1h' }, (err, token) => {
+        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
             if (err) throw err;
             res.status(201).json({ token });
         });
@@ -88,8 +87,7 @@ router.post('/login', async (req, res) => {
             }
         };
 
-        // NOTE: In production, the JWT secret should be a long, complex, and securely stored environment variable.
-        jwt.sign(payload, 'your_jwt_secret', { expiresIn: '1h' }, (err, token) => {
+        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
             if (err) throw err;
             res.json({ token });
         });

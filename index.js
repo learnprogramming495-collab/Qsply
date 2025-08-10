@@ -1,26 +1,49 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const app = express();
-const port = 3000;
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
-// Middleware for parsing request bodies
+const app = express();
+const port = process.env.PORT || 3000;
+
+// --- Security Middleware ---
+app.use(helmet());
+
+// Rate Limiter for general API routes
+const apiLimiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 100, // Limit each IP to 100 requests per window
+	standardHeaders: true,
+	legacyHeaders: false,
+});
+
+// Stricter Rate Limiter for authentication routes
+const authLimiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 10, // Limit each IP to 10 requests per window
+	message: 'Too many authentication attempts from this IP, please try again after 15 minutes',
+});
+
+// --- Core Middleware ---
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// MongoDB Connection
-// Note: In a production environment, this connection string should be stored in an environment variable.
-mongoose.connect('mongodb://localhost:27017/agritech')
+// --- Database Connection ---
+const dbURI = process.env.MONGO_URI || 'mongodb://localhost:27017/agritech_fallback';
+mongoose.connect(dbURI)
   .then(() => console.log('MongoDB connected successfully.'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// Serve static files from the 'public' directory
+// --- Static Files ---
 app.use(express.static('public'));
 
-// Define API routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/products', require('./routes/products'));
-app.use('/api/cart', require('./routes/cart'));
+// --- API Routes ---
+app.use('/api/auth', authLimiter, require('./routes/auth'));
+app.use('/api/products', apiLimiter, require('./routes/products'));
+app.use('/api/cart', apiLimiter, require('./routes/cart'));
 
+// --- Server Startup ---
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
