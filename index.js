@@ -18,6 +18,7 @@ app.use(express.static('public'));
 
 // Define API routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/products', require('./routes/products'));
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
