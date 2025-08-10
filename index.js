@@ -42,6 +42,7 @@ app.use(express.static('public'));
 app.use('/api/auth', authLimiter, require('./routes/auth'));
 app.use('/api/products', apiLimiter, require('./routes/products'));
 app.use('/api/cart', apiLimiter, require('./routes/cart'));
+app.use('/api/orders', apiLimiter, require('./routes/orders')); // Apply general limiter
 
 // --- Server Startup ---
 app.listen(port, () => {
