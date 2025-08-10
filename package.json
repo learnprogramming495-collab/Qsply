@@ -1,0 +1,25 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/learnprogramming495-collab/Qsply.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/learnprogramming495-collab/Qsply/issues"
+  },
+  "homepage": "https://github.com/learnprogramming495-collab/Qsply#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
