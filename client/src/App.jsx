@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
 import CartPage from './pages/CartPage';
 import OrdersPage from './pages/OrdersPage';
+import ProductDetailPage from './pages/ProductDetailPage';
 // import CheckoutPage from './pages/CheckoutPage'; // To be created
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -16,8 +17,9 @@ function App() {
     <Router>
       <Routes>
         <Route element={<Layout />}>
-          {/* Public Route */}
+          {/* Public Routes */}
           <Route path="/" element={user ? <DashboardPage /> : <HomePage />} />
+          <Route path="/products/:productId" element={<ProductDetailPage />} />
 
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>

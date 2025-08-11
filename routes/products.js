@@ -6,23 +6,17 @@ const auth = require('../middleware/auth');
 const Product = require('../models/Product');
 
 // @route   GET /api/products
-// @desc    Get all products with filtering, searching, and sorting
+// @desc    Get all products with filtering, searching, sorting, and pagination
 // @access  Public
 router.get('/', async (req, res) => {
     try {
-        const { search, category, minPrice, maxPrice, sortBy } = req.query;
+        // Destructure query parameters with defaults for pagination
+        const { search, category, minPrice, maxPrice, sortBy, page = 1, limit = 9 } = req.query;
 
-        // Build query object
+        // Build query object for filtering
         let query = {};
-
-        if (search) {
-            query.name = { $regex: search, $options: 'i' }; // Search by name
-        }
-
-        if (category) {
-            query.category = category;
-        }
-
+        if (search) query.name = { $regex: search, $options: 'i' };
+        if (category) query.category = category;
         if (minPrice || maxPrice) {
             query.price = {};
             if (minPrice) query.price.$gte = parseFloat(minPrice);
@@ -30,19 +24,34 @@ router.get('/', async (req, res) => {
         }
 
         // Build sort object
-        let sortOptions = { createdAt: -1 }; // Default sort
+        let sortOptions = { createdAt: -1 };
         if (sortBy) {
-            const parts = sortBy.split('_'); // e.g., 'price_asc'
+            const parts = sortBy.split('_');
             if (parts.length === 2) {
                 sortOptions = { [parts[0]]: parts[1] === 'desc' ? -1 : 1 };
             }
         }
 
+        // Pagination logic
+        const pageNum = parseInt(page);
+        const limitNum = parseInt(limit);
+        const skip = (pageNum - 1) * limitNum;
+
+        // Execute query for total count and for paginated results
+        const totalProducts = await Product.countDocuments(query);
         const products = await Product.find(query)
             .populate('seller', 'username')
-            .sort(sortOptions);
+            .sort(sortOptions)
+            .skip(skip)
+            .limit(limitNum);
 
-        res.json(products);
+        res.json({
+            products,
+            currentPage: pageNum,
+            totalPages: Math.ceil(totalProducts / limitNum),
+            totalProducts,
+        });
+
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');

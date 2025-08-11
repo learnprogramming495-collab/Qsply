@@ -19,9 +19,15 @@ const createProduct = async (productData, token) => {
     return response.data;
 };
 
+const getProductById = async (id) => {
+    const response = await axios.get(`${API_URL}/${id}`);
+    return response.data;
+};
+
 const productService = {
     getAllProducts,
     createProduct,
+    getProductById,
 };
 
 export default productService;
