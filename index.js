@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -35,14 +36,24 @@ mongoose.connect(dbURI)
   .then(() => console.log('MongoDB connected successfully.'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// --- Static Files ---
-app.use(express.static('public'));
-
 // --- API Routes ---
 app.use('/api/auth', authLimiter, require('./routes/auth'));
 app.use('/api/products', apiLimiter, require('./routes/products'));
 app.use('/api/cart', apiLimiter, require('./routes/cart'));
-app.use('/api/orders', apiLimiter, require('./routes/orders')); // Apply general limiter
+app.use('/api/orders', apiLimiter, require('./routes/orders'));
+
+// --- Serve Frontend ---
+if (process.env.NODE_ENV === 'production') {
+    // Serve static files from the React app's build directory
+    app.use(express.static(path.join(__dirname, 'client/dist')));
+
+    // The "catchall" handler: for any request that doesn't
+    // match one above, send back React's index.html file.
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'));
+    });
+}
+
 
 // --- Server Startup ---
 app.listen(port, () => {
