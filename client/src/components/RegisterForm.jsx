@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Box, TextField, Button, Typography, Alert } from '@mui/material';
 
 const RegisterForm = ({ onRegister, error }) => {
     const [username, setUsername] = useState('');
@@ -14,37 +15,42 @@ const RegisterForm = ({ onRegister, error }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <h2>Register</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <input
+        <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Typography variant="h5" component="h2" gutterBottom>
+                Register
+            </Typography>
+            {error && <Alert severity="error">{error}</Alert>}
+            <TextField
+                label="Username"
                 type="text"
-                placeholder="Username"
+                variant="outlined"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                style={{ padding: '0.8rem', borderRadius: '4px', border: '1px solid #ddd' }}
+                fullWidth
             />
-            <input
+            <TextField
+                label="Email"
                 type="email"
-                placeholder="Email"
+                variant="outlined"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                style={{ padding: '0.8rem', borderRadius: '4px', border: '1px solid #ddd' }}
+                fullWidth
             />
-            <input
+            <TextField
+                label="Password"
                 type="password"
-                placeholder="Password"
+                variant="outlined"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                style={{ padding: '0.8rem', borderRadius: '4px', border: '1px solid #ddd' }}
+                fullWidth
             />
-            <button type="submit" style={{ padding: '0.8rem', borderRadius: '4px', border: 'none', backgroundColor: '#007bff', color: 'white', cursor: 'pointer' }}>
+            <Button type="submit" variant="contained" color="secondary" size="large">
                 Register
-            </button>
-        </form>
+            </Button>
+        </Box>
     );
 };
 

@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import LoginForm from '../components/LoginForm';
 import RegisterForm from '../components/RegisterForm';
 import authService from '../services/authService';
+import { Grid, Paper, Typography, Box, Divider } from '@mui/material';
 
 const HomePage = () => {
     const [loginError, setLoginError] = useState('');
@@ -34,10 +35,24 @@ const HomePage = () => {
     };
 
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', maxWidth: '1000px', margin: '4rem auto', padding: '2rem', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-            <LoginForm onLogin={handleLogin} error={loginError} />
-            <RegisterForm onRegister={handleRegister} error={registerError} />
-        </div>
+        <Box sx={{ flexGrow: 1, mt: 4 }}>
+            <Typography variant="h4" component="h1" gutterBottom align="center">
+                AgriTech Platform
+            </Typography>
+            <Typography variant="subtitle1" align="center" color="text.secondary" sx={{ mb: 4 }}>
+                Connecting Farmers and Buyers in Nepal
+            </Typography>
+            <Paper elevation={3} sx={{ maxWidth: 1000, mx: 'auto' }}>
+                <Grid container>
+                    <Grid item xs={12} md={6} sx={{ p: 4 }}>
+                        <LoginForm onLogin={handleLogin} error={loginError} />
+                    </Grid>
+                    <Grid item xs={12} md={6} sx={{ p: 4, borderLeft: { md: '1px solid #ddd' } }}>
+                        <RegisterForm onRegister={handleRegister} error={registerError} />
+                    </Grid>
+                </Grid>
+            </Paper>
+        </Box>
     );
 };
 

@@ -1,36 +1,10 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-
-const headerStyles = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '1rem 2rem',
-    backgroundColor: '#fff',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-};
-
-const navStyles = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1.5rem',
-};
-
-const linkStyles = {
-    textDecoration: 'none',
-    color: '#007bff',
-    fontWeight: 'bold',
-};
-
-const buttonStyles = {
-    border: 'none',
-    padding: '0.5rem 1rem',
-    backgroundColor: '#dc3545',
-    color: 'white',
-    borderRadius: '4px',
-    cursor: 'pointer',
-};
+import { AppBar, Toolbar, Typography, Button, Box, Link } from '@mui/material';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 const Header = () => {
     const { user, logout } = useAuth();
@@ -42,23 +16,40 @@ const Header = () => {
     };
 
     return (
-        <header style={headerStyles}>
-            <Link to="/" style={{ ...linkStyles, fontSize: '1.5rem' }}>AgriTech</Link>
-            <nav style={navStyles}>
-                {user ? (
-                    <>
-                        <Link to="/dashboard" style={linkStyles}>Dashboard</Link>
-                        <Link to="/cart" style={linkStyles}>Cart</Link>
-                        <Link to="/orders" style={linkStyles}>Orders</Link>
-                        <button onClick={handleLogout} style={buttonStyles}>Logout</button>
-                    </>
-                ) : (
-                    <>
-                        <Link to="/" style={linkStyles}>Login / Register</Link>
-                    </>
-                )}
-            </nav>
-        </header>
+        <AppBar position="static" color="primary">
+            <Toolbar>
+                <Typography
+                    variant="h6"
+                    component={RouterLink}
+                    to="/"
+                    sx={{ flexGrow: 1, color: 'inherit', textDecoration: 'none' }}
+                >
+                    AgriTech Platform
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    {user ? (
+                        <>
+                            <Button color="inherit" component={RouterLink} to="/dashboard" startIcon={<DashboardIcon />}>
+                                Dashboard
+                            </Button>
+                            <Button color="inherit" component={RouterLink} to="/cart" startIcon={<ShoppingCartIcon />}>
+                                Cart
+                            </Button>
+                            <Button color="inherit" component={RouterLink} to="/orders" startIcon={<ListAltIcon />}>
+                                Orders
+                            </Button>
+                            <Button variant="contained" color="secondary" onClick={handleLogout}>
+                                Logout
+                            </Button>
+                        </>
+                    ) : (
+                        <Button color="inherit" component={RouterLink} to="/">
+                            Login / Register
+                        </Button>
+                    )}
+                </Box>
+            </Toolbar>
+        </AppBar>
     );
 };
 

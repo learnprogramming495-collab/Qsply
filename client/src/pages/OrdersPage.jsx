@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import orderService from '../services/orderService';
+import { Box, Typography, Paper, List, ListItem, ListItemText, Divider, CircularProgress, Card, CardContent } from '@mui/material';
 
 const OrdersPage = () => {
     const [orders, setOrders] = useState([]);
@@ -28,38 +29,54 @@ const OrdersPage = () => {
         fetchOrders();
     }, [token]);
 
-    if (loading) return <p>Loading orders...</p>;
-    if (error) return <p style={{ color: 'red' }}>{error}</p>;
+    if (loading) return <CircularProgress />;
+    if (error) return <Typography color="error">{error}</Typography>;
 
     return (
-        <div style={{ padding: '2rem' }}>
-            <h1>My Orders</h1>
+        <Paper elevation={3} sx={{ p: 4 }}>
+            <Typography variant="h4" component="h1" gutterBottom>
+                My Orders
+            </Typography>
             {orders.length === 0 ? (
-                <p>You have no past orders.</p>
+                <Typography>You have no past orders.</Typography>
             ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                     {orders.map(order => (
-                        <div key={order._id} style={{ border: '1px solid #ddd', borderRadius: '8px', padding: '1rem' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #eee', paddingBottom: '1rem', marginBottom: '1rem' }}>
-                                <div>
-                                    <strong>Order ID:</strong> {order._id} <br />
-                                    <strong>Date:</strong> {new Date(order.createdAt).toLocaleDateString()}
-                                </div>
-                                <div>
-                                    <strong>Total: ${order.totalPrice.toFixed(2)}</strong> <br />
-                                    <strong>Status:</strong> {order.status}
-                                </div>
-                            </div>
-                            <div>
-                                {order.products.map(p => (
-                                    <p key={p.productId}>{p.name} (x{p.quantity})</p>
-                                ))}
-                            </div>
-                        </div>
+                        <Card key={order._id} variant="outlined">
+                            <CardContent>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                                    <Typography variant="body2" color="text.secondary">
+                                        Order ID: {order._id}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        Date: {new Date(order.createdAt).toLocaleDateString()}
+                                    </Typography>
+                                </Box>
+                                <List dense>
+                                    {order.products.map(p => (
+                                        <ListItem key={p.productId} disableGutters>
+                                            <ListItemText
+                                                primary={`${p.name} (x${p.quantity})`}
+                                                secondary={`$${p.price.toFixed(2)} each`}
+                                            />
+                                        </ListItem>
+                                    ))}
+                                </List>
+                                <Divider sx={{ my: 2 }}/>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Typography variant="body1">
+                                        Status: <strong>{order.status}</strong>
+                                    </Typography>
+                                    <Typography variant="h6">
+                                        Total: ${order.totalPrice.toFixed(2)}
+                                    </Typography>
+                                </Box>
+                            </CardContent>
+                        </Card>
                     ))}
-                </div>
+                </Box>
             )}
-        </div>
+        </Paper>
     );
 };
 

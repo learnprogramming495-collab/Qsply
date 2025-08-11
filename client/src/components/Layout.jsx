@@ -1,15 +1,16 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from './Header';
+import { Container, Box } from '@mui/material';
 
 const Layout = () => {
     return (
-        <div>
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Header />
-            <main style={{ padding: '2rem' }}>
+            <Container component="main" sx={{ flexGrow: 1, py: 3 }}>
                 <Outlet />
-            </main>
-        </div>
+            </Container>
+        </Box>
     );
 };
 

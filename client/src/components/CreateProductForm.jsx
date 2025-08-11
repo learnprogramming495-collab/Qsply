@@ -1,25 +1,5 @@
 import React, { useState } from 'react';
-
-const formStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-};
-
-const inputStyle = {
-    padding: '0.8rem',
-    borderRadius: '4px',
-    border: '1px solid #ddd',
-};
-
-const buttonStyle = {
-    padding: '0.8rem',
-    borderRadius: '4px',
-    border: 'none',
-    backgroundColor: '#007bff',
-    color: 'white',
-    cursor: 'pointer',
-};
+import { Box, TextField, Button, Typography, Select, MenuItem, FormControl, InputLabel, Alert } from '@mui/material';
 
 const CreateProductForm = ({ onCreate, error }) => {
     const [formData, setFormData] = useState({
@@ -40,22 +20,69 @@ const CreateProductForm = ({ onCreate, error }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         onCreate(formData);
-        // Optionally clear form after submission if parent component doesn't handle it
         setFormData({ name: '', description: '', category: 'Vegetable', quantity: '', price: '' });
     };
 
     return (
-        <form onSubmit={handleSubmit} style={formStyle}>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <input type="text" name="name" placeholder="Product Name" value={formData.name} onChange={handleChange} required style={inputStyle} />
-            <textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} style={inputStyle} />
-            <select name="category" value={formData.category} onChange={handleChange} required style={inputStyle}>
-                {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-            </select>
-            <input type="number" name="quantity" placeholder="Quantity (e.g., in kg)" value={formData.quantity} onChange={handleChange} required min="0" style={inputStyle} />
-            <input type="number" name="price" placeholder="Price per unit" value={formData.price} onChange={handleChange} required min="0" step="0.01" style={inputStyle} />
-            <button type="submit" style={buttonStyle}>Create Listing</button>
-        </form>
+        <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+            <TextField
+                name="name"
+                label="Product Name"
+                variant="outlined"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                fullWidth
+            />
+            <TextField
+                name="description"
+                label="Description"
+                variant="outlined"
+                value={formData.description}
+                onChange={handleChange}
+                multiline
+                rows={4}
+                fullWidth
+            />
+            <FormControl fullWidth required>
+                <InputLabel id="category-select-label">Category</InputLabel>
+                <Select
+                    labelId="category-select-label"
+                    name="category"
+                    value={formData.category}
+                    label="Category"
+                    onChange={handleChange}
+                >
+                    {categories.map(cat => <MenuItem key={cat} value={cat}>{cat}</MenuItem>)}
+                </Select>
+            </FormControl>
+            <TextField
+                name="quantity"
+                label="Quantity (e.g., in kg)"
+                type="number"
+                variant="outlined"
+                value={formData.quantity}
+                onChange={handleChange}
+                required
+                fullWidth
+                InputProps={{ inputProps: { min: 0 } }}
+            />
+            <TextField
+                name="price"
+                label="Price per unit"
+                type="number"
+                variant="outlined"
+                value={formData.price}
+                onChange={handleChange}
+                required
+                fullWidth
+                InputProps={{ inputProps: { min: 0, step: "0.01" } }}
+            />
+            <Button type="submit" variant="contained" color="primary" size="large">
+                Create Listing
+            </Button>
+        </Box>
     );
 };
 

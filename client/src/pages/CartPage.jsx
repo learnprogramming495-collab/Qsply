@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useSnackbar } from '../context/SnackbarContext';
 import cartService from '../services/cartService';
 import { useNavigate } from 'react-router-dom';
+import { Box, Button, Typography, Paper, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Divider, CircularProgress } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const CartPage = () => {
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const { token } = useAuth();
+    const { showSnackbar } = useSnackbar();
     const navigate = useNavigate();
 
     const fetchCart = async () => {
@@ -32,43 +36,63 @@ const CartPage = () => {
     const handleRemove = async (productId) => {
         try {
             await cartService.removeFromCart(productId, token);
+            showSnackbar('Item removed from cart', 'success');
             fetchCart(); // Refresh cart
         } catch (err) {
-            alert('Failed to remove item.');
+            showSnackbar('Failed to remove item.', 'error');
         }
     };
 
     const total = cartItems.reduce((acc, item) => acc + item.quantity * item.product.price, 0);
 
-    if (loading) return <p>Loading cart...</p>;
-    if (error) return <p style={{ color: 'red' }}>{error}</p>;
+    if (loading) return <CircularProgress />;
+    if (error) return <Typography color="error">{error}</Typography>;
 
     return (
-        <div style={{ padding: '2rem' }}>
-            <h1>Shopping Cart</h1>
+        <Paper elevation={3} sx={{ p: 4 }}>
+            <Typography variant="h4" component="h1" gutterBottom>
+                Shopping Cart
+            </Typography>
             {cartItems.length === 0 ? (
-                <p>Your cart is empty.</p>
+                <Typography>Your cart is empty.</Typography>
             ) : (
-                <div>
-                    {cartItems.map(item => (
-                        <div key={item.product._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #ddd', padding: '1rem 0' }}>
-                            <div>
-                                <h4>{item.product.name}</h4>
-                                <p>Quantity: {item.quantity}</p>
-                                <p>Price: ${item.product.price.toFixed(2)}</p>
-                            </div>
-                            <button onClick={() => handleRemove(item.product._id)}>Remove</button>
-                        </div>
-                    ))}
-                    <div style={{ textAlign: 'right', marginTop: '2rem', fontSize: '1.5rem' }}>
-                        <strong>Total: ${total.toFixed(2)}</strong>
-                    </div>
-                    <button onClick={() => navigate('/checkout')} style={{ width: '100%', padding: '1rem', marginTop: '1rem' }}>
+                <>
+                    <List>
+                        {cartItems.map(item => (
+                            <ListItem key={item.product._id} divider>
+                                <ListItemText
+                                    primary={item.product.name}
+                                    secondary={`Quantity: ${item.quantity} @ $${item.product.price.toFixed(2)} each`}
+                                />
+                                <ListItemSecondaryAction>
+                                    <Typography variant="body1" sx={{ mr: 2 }}>
+                                        ${(item.quantity * item.product.price).toFixed(2)}
+                                    </Typography>
+                                    <IconButton edge="end" aria-label="delete" onClick={() => handleRemove(item.product._id)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                        ))}
+                    </List>
+                    <Divider sx={{ my: 2 }}/>
+                    <Box sx={{ textAlign: 'right', my: 2 }}>
+                        <Typography variant="h5">
+                            Total: ${total.toFixed(2)}
+                        </Typography>
+                    </Box>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        fullWidth
+                        onClick={() => navigate('/checkout')}
+                    >
                         Proceed to Checkout
-                    </button>
-                </div>
+                    </Button>
+                </>
             )}
-        </div>
+        </Paper>
     );
 };
 
