@@ -47,7 +47,7 @@ const HomePage = () => {
                     <Grid item xs={12} md={6} sx={{ p: 4 }}>
                         <LoginForm onLogin={handleLogin} error={loginError} />
                     </Grid>
-                    <Grid item xs={12} md={6} sx={{ p: 4, borderLeft: { md: '1px solid #ddd' } }}>
+                    <Grid item xs={12} md={6} sx={{ p: 4, borderLeft: { md: (theme) => `1px solid ${theme.palette.divider}` } }}>
                         <RegisterForm onRegister={handleRegister} error={registerError} />
                     </Grid>
                 </Grid>

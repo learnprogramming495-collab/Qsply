@@ -58,6 +58,6 @@ if (process.env.NODE_ENV === 'production') {
 
 
 // --- Server Startup ---
-app.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`);
-});
+// app.listen is moved to server.js
+// We export the app for testing purposes
+module.exports = app;

@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { AppBar, Toolbar, Typography, Button, Box, Link } from '@mui/material';
+import { AppBar, Toolbar, Button, Box } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import Logo from './Logo'; // Import the new Logo component
 
 const Header = () => {
     const { user, logout } = useAuth();
@@ -18,14 +19,9 @@ const Header = () => {
     return (
         <AppBar position="static" color="primary">
             <Toolbar>
-                <Typography
-                    variant="h6"
-                    component={RouterLink}
-                    to="/"
-                    sx={{ flexGrow: 1, color: 'inherit', textDecoration: 'none' }}
-                >
-                    AgriTech Platform
-                </Typography>
+                <Box sx={{ flexGrow: 1 }}>
+                    <Logo />
+                </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     {user ? (
                         <>
