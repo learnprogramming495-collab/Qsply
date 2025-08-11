@@ -93,6 +93,14 @@ const DashboardPage = () => {
                             {products.map(product => (
                                 <Grid item key={product._id} xs={12} sm={6} md={4}>
                                     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                                        {product.imageUrl && (
+                                            <CardMedia
+                                                component="img"
+                                                height="160"
+                                                image={product.imageUrl}
+                                                alt={product.name}
+                                            />
+                                        )}
                                         <CardContent sx={{ flexGrow: 1 }}>
                                             <Typography variant="h6" component="div">{product.name}</Typography>
                                             <Typography variant="body2" color="text.secondary" gutterBottom>{product.category}</Typography>
