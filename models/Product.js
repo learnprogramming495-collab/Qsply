@@ -11,6 +11,11 @@ const ProductSchema = new Schema({
         type: String,
         trim: true
     },
+    category: {
+        type: String,
+        required: true,
+        enum: ['Vegetable', 'Fruit', 'Grain', 'Dairy', 'Meat', 'Other']
+    },
     quantity: {
         type: Number,
         required: true,
